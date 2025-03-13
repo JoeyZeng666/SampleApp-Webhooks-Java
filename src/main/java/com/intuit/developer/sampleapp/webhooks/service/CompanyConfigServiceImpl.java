@@ -55,10 +55,12 @@ public class CompanyConfigServiceImpl implements CompanyConfigService {
 	
 	@Override
 	public CompanyConfig getCompanyConfigById(Integer id) {
-		CompanyConfig companyConfig = companyConfigRepository.findOne(id);
+		CompanyConfig companyConfig = companyConfigRepository.findById(id).orElse(null);
 		try {
-			companyConfig.setAccessToken(decrypt(companyConfig.getAccessToken()));
-			companyConfig.setAccessTokenSecret(decrypt(companyConfig.getAccessTokenSecret()));
+			if (companyConfig != null) {
+				companyConfig.setAccessToken(decrypt(companyConfig.getAccessToken()));
+				companyConfig.setAccessTokenSecret(decrypt(companyConfig.getAccessTokenSecret()));
+			}
 			return companyConfig;
 		} catch (Exception ex) {
 			LOG.error("Error loading company config" , ex.getCause());
